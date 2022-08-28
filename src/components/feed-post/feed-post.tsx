@@ -3,10 +3,10 @@ import { Image, Pressable, Text, View } from "react-native";
 import { Entypo, AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { IFeedPost } from "./feed-post.props";
 import { Comment } from "../comment";
-import { DoublePress } from "../double-press/double-press";
-import { colors } from "../../../theme";
-import { Carousel } from "../../carousel";
-import { VideoPlayer } from "../../video-player";
+import { DoublePress } from "../double-press";
+import { colors } from "../../theme";
+import { Carousel } from "../carousel";
+import { VideoPlayer } from "../video-player";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const [isLiked, setIsLiked] = useState(false);
