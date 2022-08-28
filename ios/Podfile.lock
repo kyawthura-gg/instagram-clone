@@ -3,7 +3,11 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (4.2.2):
     - ExpoModulesCore
-  - EXConstants (13.2.3):
+  - EXAV (12.0.4):
+    - ExpoModulesCore
+    - React-runtimeexecutor
+    - ReactCommon
+  - EXConstants (13.2.4):
     - ExpoModulesCore
   - EXErrorRecovery (3.2.0):
     - ExpoModulesCore
@@ -11,14 +15,14 @@ PODS:
     - ExpoModulesCore
   - EXFont (10.2.0):
     - ExpoModulesCore
-  - Expo (46.0.8):
+  - Expo (46.0.9):
     - ExpoModulesCore
   - ExpoKeepAwake (10.2.0):
     - ExpoModulesCore
   - ExpoModulesCore (0.11.4):
     - React-Core
     - ReactCommon/turbomodule/core
-  - EXSplashScreen (0.16.1):
+  - EXSplashScreen (0.16.2):
     - ExpoModulesCore
     - React-Core
   - FBLazyVector (0.69.4)
@@ -295,6 +299,25 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.69.4)
   - React-runtimeexecutor (0.69.4):
     - React-jsi (= 0.69.4)
+  - ReactCommon (0.69.4):
+    - React-logger (= 0.69.4)
+    - ReactCommon/react_debug_core (= 0.69.4)
+    - ReactCommon/turbomodule (= 0.69.4)
+  - ReactCommon/react_debug_core (0.69.4):
+    - React-logger (= 0.69.4)
+  - ReactCommon/turbomodule (0.69.4):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2021.06.28.00-v2)
+    - React-bridging (= 0.69.4)
+    - React-callinvoker (= 0.69.4)
+    - React-Core (= 0.69.4)
+    - React-cxxreact (= 0.69.4)
+    - React-jsi (= 0.69.4)
+    - React-logger (= 0.69.4)
+    - React-perflogger (= 0.69.4)
+    - ReactCommon/turbomodule/core (= 0.69.4)
+    - ReactCommon/turbomodule/samples (= 0.69.4)
   - ReactCommon/turbomodule/core (0.69.4):
     - DoubleConversion
     - glog
@@ -306,12 +329,25 @@ PODS:
     - React-jsi (= 0.69.4)
     - React-logger (= 0.69.4)
     - React-perflogger (= 0.69.4)
+  - ReactCommon/turbomodule/samples (0.69.4):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2021.06.28.00-v2)
+    - React-bridging (= 0.69.4)
+    - React-callinvoker (= 0.69.4)
+    - React-Core (= 0.69.4)
+    - React-cxxreact (= 0.69.4)
+    - React-jsi (= 0.69.4)
+    - React-logger (= 0.69.4)
+    - React-perflogger (= 0.69.4)
+    - ReactCommon/turbomodule/core (= 0.69.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -363,6 +399,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../node_modules/expo-application/ios"
+  EXAV:
+    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXErrorRecovery:
@@ -444,14 +482,15 @@ SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: e418d737a036e788510f2c4ad6c10a7d54d18586
-  EXConstants: 75c40827af38bd6bfcf69f880a5b45037eeff9c9
+  EXAV: 596506c9bee54ad52f2f3b625cdaeb9d9f2dd6b7
+  EXConstants: 7c44785d41d8e959d527d23d29444277a4d1ee73
   EXErrorRecovery: 74d71ee59f6814315457b09d68e86aa95cc7d05d
   EXFileSystem: 927e0a8885aa9c49e50fc38eaba2c2389f2f1019
   EXFont: a5d80bd9b3452b2d5abbce2487da89b0150e6487
-  Expo: 2322364db3fe1adaa179787edb7e1bc6e5159c78
+  Expo: 73412414e62f5cbc6e713def821de70b92cd3ad6
   ExpoKeepAwake: 0e8f18142e71bbf2c7f6aa66ebed249ba1420320
   ExpoModulesCore: e281bb7b78ea47e227dd5af94d04b24d8b2e1255
-  EXSplashScreen: 31ab6df6d23e97e074d1330224741979943f1d82
+  EXSplashScreen: 799bece80089219b2c989c1082d70f3b00995cda
   FBLazyVector: c71b8c429a8af2aff1013934a7152e9d9d0c937d
   FBReactNativeSpec: cb0df4f0084281b394f76bb9b4d1d9540f35963f
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
