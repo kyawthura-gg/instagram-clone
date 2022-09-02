@@ -4,16 +4,21 @@
     "slug": "insta-clone",
     "version": "1.0.0",
     "sdkVersion": "46.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "android": {
       "package": "com.kyawthura.instaclone"
     },
     "ios": {
       "bundleIdentifier": "com.kyawthura.instaclone"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+        }
+      ]
+    ]
   }
 }
