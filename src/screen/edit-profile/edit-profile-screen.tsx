@@ -70,7 +70,7 @@ export const EditProfileScreen = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if ("uri" in result && !result.cancelled) {
       setSelectedPhoto(result.uri);
     }
   };

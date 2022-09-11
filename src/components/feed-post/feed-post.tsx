@@ -7,8 +7,10 @@ import { DoublePress } from "../double-press";
 import { colors } from "../../theme";
 import { Carousel } from "../carousel";
 import { VideoPlayer } from "../video-player";
+import { useNavigation } from "@react-navigation/native";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
+  const { navigate } = useNavigation();
   const [isLiked, setIsLiked] = useState(false);
   const [readMore, setReadMore] = useState(false);
 
@@ -16,6 +18,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const toggleLike = () => setIsLiked((l) => !l);
 
   console.log("isVisible", isVisible);
+  const navigateToUser = (userId: string) => navigate("Profile");
 
   let content = null;
   if (post.image) {
@@ -82,7 +85,10 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         <Text onPress={toggleMore} className="text-gray-400">
           {readMore ? "less" : "more"}
         </Text>
-        <Text className="text-gray-500 mt-1">
+        <Text
+          onPress={() => navigate("Comment")}
+          className="text-gray-500 mt-1"
+        >
           View all {post.nofComments} comments
         </Text>
         {post.comments.map((comment) => (
