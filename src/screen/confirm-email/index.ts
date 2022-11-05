@@ -1,1 +1,1 @@
-export { default } from "./confirm-email-screen";
+export * from "./confirm-email-screen";

@@ -5,12 +5,15 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
+//@ts-ignore
 import Logo from "../../assets/images/logo.png";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { Auth } from "aws-amplify";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
 import SocialSignInButtons from "../../components/social-sign-in-buttons";
+import { useAuthContext } from "../../contexts/auth-context";
 
 type SignInData = {
   username: string;
@@ -19,22 +22,37 @@ type SignInData = {
 
 export const SignInScreen = () => {
   const { height } = useWindowDimensions();
-  const navigation = useNavigation();
+  const { navigate } = useNavigation();
+  const { setUser } = useAuthContext();
 
-  const { control, handleSubmit } = useForm<SignInData>();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<SignInData>();
 
-  const onSignInPressed = (data: SignInData) => {
-    console.log(data);
-    // validate user
-    // navigation.navigate('Home');
-  };
+  const onSignInPressed = handleSubmit(async (data) => {
+    try {
+      console.log("data", data);
+      const result = await Auth.signIn(data);
+      setUser(result);
+      console.log("result", result);
+    } catch (error) {
+      const err = error as Error;
+      if (err?.name === "UserNotConfirmedException") {
+        navigate("ConfirmEmail", { username: data.username });
+        return;
+      }
+      alert(err?.message);
+    }
+  });
 
   const onForgotPasswordPressed = () => {
-    navigation.navigate("ForgotPassword");
+    navigate("ForgotPassword");
   };
 
   const onSignUpPress = () => {
-    navigation.navigate("SignUp");
+    navigate("SignUp");
   };
 
   return (
@@ -67,7 +85,10 @@ export const SignInScreen = () => {
           }}
         />
 
-        <CustomButton text="Sign In" onPress={handleSubmit(onSignInPressed)} />
+        <CustomButton
+          text={isSubmitting ? "Loading..." : "Sign In"}
+          onPress={onSignInPressed}
+        />
 
         <CustomButton
           text="Forgot password?"

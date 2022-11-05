@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
 import { RootStackScreenProps } from "../../navigators";
+import { Auth } from "aws-amplify";
 
 type ConfirmEmailData = {
   username: string;
@@ -14,22 +15,39 @@ type ConfirmEmailData = {
 export const ConfirmEmailScreen = ({
   route,
 }: RootStackScreenProps<"ConfirmEmail">) => {
-  const { control, handleSubmit } = useForm<ConfirmEmailData>({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<ConfirmEmailData>({
     defaultValues: { username: route.params?.username },
   });
 
+  const usr = watch("username");
+
   const navigation = useNavigation();
 
-  const onConfirmPressed = (data: ConfirmEmailData) => {
-    console.warn(data);
-    navigation.navigate("SignIn");
-  };
+  const onConfirmPressed = handleSubmit(async ({ username, code }) => {
+    try {
+      await Auth.confirmSignUp(username, code);
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
+    // navigation.navigate("SignIn");
+  });
 
   const onSignInPress = () => {
     navigation.navigate("SignIn");
   };
 
-  const onResendPress = () => {
+  const onResendPress = async () => {
+    try {
+      await Auth.resendSignUp(usr);
+      alert("Check your email");
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
     console.warn("onResendPress");
   };
 
@@ -56,7 +74,10 @@ export const ConfirmEmailScreen = ({
           }}
         />
 
-        <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
+        <CustomButton
+          text={isSubmitting ? "Loading..." : "Confirm"}
+          onPress={onConfirmPressed}
+        />
 
         <CustomButton
           text="Resend code"

@@ -1,3 +1,4 @@
+import { Auth } from "aws-amplify";
 import React from "react";
 import { Image, Text, View } from "react-native";
 import { Button } from "../../components/button";
@@ -38,7 +39,7 @@ export const ProfileHeader = ({ user }: Props) => {
       <Text className="text-gray-500 mt-1">{user.bio}</Text>
       <View className="flex-row mt-4 mb-2">
         <Button label="Edit Profile" className="mr-2" />
-        <Button label="Test Button" />
+        <Button label="Logout" onPress={() => Auth.signOut()} />
       </View>
     </View>
   );

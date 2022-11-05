@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
+import { Auth } from "aws-amplify";
 
 type NewPasswordType = {
   username: string;
@@ -12,14 +13,22 @@ type NewPasswordType = {
 };
 
 export const NewPasswordScreen = () => {
-  const { control, handleSubmit } = useForm<NewPasswordType>();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<NewPasswordType>();
 
   const navigation = useNavigation();
 
-  const onSubmitPressed = (data: NewPasswordType) => {
-    console.warn(data);
-    navigation.navigate("SignIn");
-  };
+  const onSubmitPressed = handleSubmit(async ({ code, password, username }) => {
+    try {
+      await Auth.forgotPasswordSubmit(username, code, password);
+      navigation.navigate("SignIn");
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
+  });
 
   const onSignInPress = () => {
     navigation.navigate("SignIn");
@@ -58,7 +67,10 @@ export const NewPasswordScreen = () => {
           }}
         />
 
-        <CustomButton text="Submit" onPress={handleSubmit(onSubmitPressed)} />
+        <CustomButton
+          text={isSubmitting ? "Loading" : "Submit"}
+          onPress={onSubmitPressed}
+        />
 
         <CustomButton
           text="Back to Sign in"

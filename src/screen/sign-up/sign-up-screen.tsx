@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
 import SocialSignInButtons from "../../components/social-sign-in-buttons";
+import { Auth } from "aws-amplify";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -19,18 +20,29 @@ type SignUpData = {
 };
 
 export const SignUpScreen = () => {
-  const { control, handleSubmit, watch } = useForm<SignUpData>();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<SignUpData>();
   const pwd = watch("password");
   const navigation = useNavigation();
 
-  const onRegisterPressed = ({
-    name,
-    email,
-    username,
-    password,
-  }: SignUpData) => {
-    navigation.navigate("ConfirmEmail", { username });
-  };
+  const onRegisterPressed = handleSubmit(
+    async ({ name, email, username, password }) => {
+      try {
+        await Auth.signUp({
+          username,
+          password,
+          attributes: { name, email },
+        });
+        navigation.navigate("ConfirmEmail", { username });
+      } catch (error) {
+        alert((error as Error)?.message);
+      }
+    },
+  );
 
   const onSignInPress = () => {
     navigation.navigate("SignIn");
@@ -122,8 +134,8 @@ export const SignUpScreen = () => {
         />
 
         <CustomButton
-          text="Register"
-          onPress={handleSubmit(onRegisterPressed)}
+          text={isSubmitting ? "Loading" : "Register"}
+          onPress={onRegisterPressed}
         />
 
         <Text style={styles.text}>

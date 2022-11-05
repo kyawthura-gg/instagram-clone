@@ -4,19 +4,33 @@ import { useNavigation } from "@react-navigation/core";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
+import { Auth } from "aws-amplify";
 
 type ForgotPasswordData = {
   username: string;
 };
 
 export const ForgotPasswordScreen = () => {
-  const { control, handleSubmit } = useForm<ForgotPasswordData>();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<ForgotPasswordData>();
   const navigation = useNavigation();
 
-  const onSendPressed = (data: ForgotPasswordData) => {
-    console.warn(data);
-    navigation.navigate("NewPassword");
-  };
+  const onSendPressed = handleSubmit(async ({ username }) => {
+    try {
+      const result = await Auth.forgotPassword(username);
+      alert(
+        `The code has been sent to ${result?.CodeDeliveryDetails?.Destination}`,
+      );
+      navigation.navigate("NewPassword");
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
+    // console.warn(data);
+    // navigation.navigate("NewPassword");
+  });
 
   const onSignInPress = () => {
     navigation.navigate("SignIn");
@@ -36,7 +50,10 @@ export const ForgotPasswordScreen = () => {
           }}
         />
 
-        <CustomButton text="Send" onPress={handleSubmit(onSendPressed)} />
+        <CustomButton
+          text={isSubmitting ? "Loading..." : "Send"}
+          onPress={onSendPressed}
+        />
 
         <CustomButton
           text="Back to Sign in"
