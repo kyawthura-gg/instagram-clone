@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "insta-clone",
-    "slug": "insta-clone",
-    "scheme": "instaclone",
+    "name": "Ksta Clone",
+    "slug": "ksta-clone",
+    "scheme": "kstaclone",
     "version": "1.0.0",
     "sdkVersion": "46.0.0",
     "platforms": ["ios", "android", "web"],
     "android": {
-      "package": "com.kyawthura.instaclone"
+      "package": "com.kyawthura.kstaclone"
     },
     "ios": {
-      "bundleIdentifier": "com.kyawthura.instaclone"
+      "bundleIdentifier": "com.kyawthura.kstaclone"
     },
     "plugins": [
       [

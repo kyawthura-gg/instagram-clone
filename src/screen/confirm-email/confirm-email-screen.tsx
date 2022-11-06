@@ -8,7 +8,7 @@ import { RootStackScreenProps } from "../../navigators";
 import { Auth } from "aws-amplify";
 
 type ConfirmEmailData = {
-  username: string;
+  email: string;
   code: string;
 };
 
@@ -21,16 +21,16 @@ export const ConfirmEmailScreen = ({
     watch,
     formState: { isSubmitting },
   } = useForm<ConfirmEmailData>({
-    defaultValues: { username: route.params?.username },
+    defaultValues: { email: route.params?.email },
   });
 
-  const usr = watch("username");
+  const usr = watch("email");
 
   const navigation = useNavigation();
 
-  const onConfirmPressed = handleSubmit(async ({ username, code }) => {
+  const onConfirmPressed = handleSubmit(async ({ email, code }) => {
     try {
-      await Auth.confirmSignUp(username, code);
+      await Auth.confirmSignUp(email, code);
     } catch (error) {
       alert((error as Error)?.message);
     }
@@ -57,11 +57,11 @@ export const ConfirmEmailScreen = ({
         <Text style={styles.title}>Confirm your email</Text>
 
         <FormInput
-          name="username"
+          name="email"
           control={control}
-          placeholder="Username"
+          placeholder="Email"
           rules={{
-            required: "Username is required",
+            required: "Email is required",
           }}
         />
 

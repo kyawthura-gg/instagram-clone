@@ -9,12 +9,9 @@ import { Auth } from "aws-amplify";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const USERNAME_REGEX = /^[a-zA-Z0-9_]*$/; // alphanumeric and underscore
-
 type SignUpData = {
   name: string;
   email: string;
-  username: string;
   password: string;
   passwordRepeat: string;
 };
@@ -29,20 +26,18 @@ export const SignUpScreen = () => {
   const pwd = watch("password");
   const navigation = useNavigation();
 
-  const onRegisterPressed = handleSubmit(
-    async ({ name, email, username, password }) => {
-      try {
-        await Auth.signUp({
-          username,
-          password,
-          attributes: { name, email },
-        });
-        navigation.navigate("ConfirmEmail", { username });
-      } catch (error) {
-        alert((error as Error)?.message);
-      }
-    },
-  );
+  const onRegisterPressed = handleSubmit(async ({ name, email, password }) => {
+    try {
+      await Auth.signUp({
+        username: email,
+        password,
+        attributes: { name },
+      });
+      navigation.navigate("ConfirmEmail", { email });
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
+  });
 
   const onSignInPress = () => {
     navigation.navigate("SignIn");
@@ -80,26 +75,6 @@ export const SignUpScreen = () => {
           }}
         />
 
-        <FormInput
-          name="username"
-          control={control}
-          placeholder="Username"
-          rules={{
-            required: "Username is required",
-            minLength: {
-              value: 3,
-              message: "Username should be at least 3 characters long",
-            },
-            maxLength: {
-              value: 24,
-              message: "Username should be max 24 characters long",
-            },
-            pattern: {
-              value: USERNAME_REGEX,
-              message: "Username can only contain a-z, 0-9, _",
-            },
-          }}
-        />
         <FormInput
           name="email"
           control={control}

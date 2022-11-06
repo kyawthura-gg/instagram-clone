@@ -16,7 +16,7 @@ import SocialSignInButtons from "../../components/social-sign-in-buttons";
 import { useAuthContext } from "../../contexts/auth-context";
 
 type SignInData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -31,16 +31,18 @@ export const SignInScreen = () => {
     formState: { isSubmitting },
   } = useForm<SignInData>();
 
-  const onSignInPressed = handleSubmit(async (data) => {
+  const onSignInPressed = handleSubmit(async ({ email, password }) => {
     try {
-      console.log("data", data);
-      const result = await Auth.signIn(data);
+      const result = await Auth.signIn({
+        username: email,
+        password,
+      });
       setUser(result);
       console.log("result", result);
     } catch (error) {
       const err = error as Error;
       if (err?.name === "UserNotConfirmedException") {
-        navigate("ConfirmEmail", { username: data.username });
+        navigate("ConfirmEmail", { email });
         return;
       }
       alert(err?.message);
@@ -65,10 +67,10 @@ export const SignInScreen = () => {
         />
 
         <FormInput
-          name="username"
-          placeholder="Username"
+          name="email"
+          placeholder="Email"
           control={control}
-          rules={{ required: "Username is required" }}
+          rules={{ required: "Email is required" }}
         />
 
         <FormInput

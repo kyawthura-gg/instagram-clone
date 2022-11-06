@@ -7,7 +7,7 @@ import CustomButton from "../../components/custom-button";
 import { Auth } from "aws-amplify";
 
 type ForgotPasswordData = {
-  username: string;
+  email: string;
 };
 
 export const ForgotPasswordScreen = () => {
@@ -18,9 +18,9 @@ export const ForgotPasswordScreen = () => {
   } = useForm<ForgotPasswordData>();
   const navigation = useNavigation();
 
-  const onSendPressed = handleSubmit(async ({ username }) => {
+  const onSendPressed = handleSubmit(async ({ email }) => {
     try {
-      const result = await Auth.forgotPassword(username);
+      const result = await Auth.forgotPassword(email);
       alert(
         `The code has been sent to ${result?.CodeDeliveryDetails?.Destination}`,
       );
@@ -42,11 +42,11 @@ export const ForgotPasswordScreen = () => {
         <Text style={styles.title}>Reset your password</Text>
 
         <FormInput
-          name="username"
+          name="email"
           control={control}
-          placeholder="Username"
+          placeholder="Email"
           rules={{
-            required: "Username is required",
+            required: "Email is required",
           }}
         />
 
