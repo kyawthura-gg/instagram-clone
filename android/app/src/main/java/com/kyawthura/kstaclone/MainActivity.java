@@ -1,4 +1,4 @@
-package com.kyawthura.instaclone;
+package com.kyawthura.kstaclone;
 
 import android.os.Build;
 import android.os.Bundle;

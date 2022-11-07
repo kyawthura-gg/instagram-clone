@@ -1,13 +1,29 @@
+import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth";
+import { Auth } from "aws-amplify";
 import React from "react";
 import CustomButton from "../custom-button";
 
 const SocialSignInButtons = () => {
-  const onSignInFacebook = () => {
-    console.warn("onSignInFacebook");
+  const onSignInFacebook = async () => {
+    try {
+      const result = await Auth.federatedSignIn({
+        provider: CognitoHostedUIIdentityProvider.Facebook,
+      });
+      console.log("result", result);
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
   };
 
-  const onSignInGoogle = () => {
-    console.warn("onSignInGoogle");
+  const onSignInGoogle = async () => {
+    try {
+      const result = await Auth.federatedSignIn({
+        provider: CognitoHostedUIIdentityProvider.Google,
+      });
+      console.log("result", result);
+    } catch (error) {
+      alert((error as Error)?.message);
+    }
   };
 
   const onSignInApple = () => {

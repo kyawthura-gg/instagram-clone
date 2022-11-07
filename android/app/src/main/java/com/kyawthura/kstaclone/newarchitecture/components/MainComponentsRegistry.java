@@ -1,4 +1,4 @@
-package com.kyawthura.instaclone.newarchitecture.components;
+package com.kyawthura.kstaclone.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

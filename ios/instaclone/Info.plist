@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>insta-clone</string>
+    <string>Ksta Clone</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -25,8 +25,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>instaclone</string>
-          <string>com.kyawthura.instaclone</string>
+          <string>kstaclone</string>
+          <string>com.kyawthura.kstaclone</string>
         </array>
       </dict>
     </array>

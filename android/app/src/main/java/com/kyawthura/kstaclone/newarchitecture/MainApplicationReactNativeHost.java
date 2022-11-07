@@ -1,4 +1,4 @@
-package com.kyawthura.instaclone.newarchitecture;
+package com.kyawthura.kstaclone.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.kyawthura.instaclone.BuildConfig;
-import com.kyawthura.instaclone.newarchitecture.components.MainComponentsRegistry;
-import com.kyawthura.instaclone.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.kyawthura.kstaclone.BuildConfig;
+import com.kyawthura.kstaclone.newarchitecture.components.MainComponentsRegistry;
+import com.kyawthura.kstaclone.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
