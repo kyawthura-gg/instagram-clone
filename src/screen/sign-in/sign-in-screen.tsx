@@ -13,7 +13,6 @@ import { Auth } from "aws-amplify";
 import FormInput from "../../components/form-input";
 import CustomButton from "../../components/custom-button";
 import SocialSignInButtons from "../../components/social-sign-in-buttons";
-import { useAuthContext } from "../../contexts/auth-context";
 
 type SignInData = {
   email: string;
@@ -23,7 +22,6 @@ type SignInData = {
 export const SignInScreen = () => {
   const { height } = useWindowDimensions();
   const { navigate } = useNavigation();
-  const { setUser } = useAuthContext();
 
   const {
     control,
@@ -33,12 +31,10 @@ export const SignInScreen = () => {
 
   const onSignInPressed = handleSubmit(async ({ email, password }) => {
     try {
-      const result = await Auth.signIn({
+      await Auth.signIn({
         username: email,
         password,
       });
-      setUser(result);
-      console.log("result", result);
     } catch (error) {
       const err = error as Error;
       if (err?.name === "UserNotConfirmedException") {

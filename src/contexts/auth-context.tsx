@@ -2,9 +2,7 @@ import { CognitoUser } from "amazon-cognito-identity-js";
 import { Auth, Hub } from "aws-amplify";
 import {
   createContext,
-  Dispatch,
   ReactNode,
-  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -13,29 +11,28 @@ import {
 type UserType = CognitoUser | null | undefined;
 interface AuthContextType {
   user: UserType;
-  setUser: Dispatch<SetStateAction<CognitoUser>>;
 }
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  setUser: () => {},
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserType>();
 
+  const checkUser = async (ignore?: boolean) => {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser({
+        bypassCache: true,
+      });
+      !ignore && setUser(currentUser);
+    } catch (e) {
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
     let ignore = false;
-    const checkUser = async () => {
-      try {
-        const currentUser = await Auth.currentAuthenticatedUser({
-          bypassCache: true,
-        });
-        !ignore && setUser(currentUser);
-      } catch (e) {
-        setUser(null);
-      }
-    };
-    checkUser();
+    checkUser(ignore);
     return () => {
       ignore = true;
     };
@@ -47,6 +44,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       if (event === "signOut") {
         setUser(null);
       }
+      if (event === "signIn") {
+        checkUser(false);
+      }
     };
     Hub.listen("auth", listener);
 
@@ -54,9 +54,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );
 };
 
