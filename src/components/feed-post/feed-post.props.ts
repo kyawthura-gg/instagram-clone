@@ -1,5 +1,7 @@
+import { Post } from "../../API";
+
 export interface IFeedPost {
-  post: IPost;
+  post: Post;
   isVisible: boolean;
 }
 

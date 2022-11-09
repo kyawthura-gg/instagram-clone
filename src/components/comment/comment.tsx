@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { IComment } from "../feed-post";
 import { colors } from "../../theme";
+import { Comment as IComment } from "../../API";
 
 interface IProps {
   comment: IComment;
@@ -17,13 +17,13 @@ export const Comment = ({ comment, showDetails }: IProps) => {
     <View className="flex-row mb-1 items-center">
       {showDetails ? (
         <Image
-          source={{ uri: comment.user.image }}
+          source={{ uri: comment.User?.image }}
           className="w-10 h-10 rounded-full mr-2"
         />
       ) : null}
       <View className="flex-1">
         <Text>
-          <Text className="font-bold">{comment.user.username} </Text>
+          <Text className="font-bold">{comment.User?.username} </Text>
           {comment.comment}
         </Text>
         {showDetails ? (

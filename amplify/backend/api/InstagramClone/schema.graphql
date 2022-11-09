@@ -1,0 +1,48 @@
+type Like @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  userID: ID! @index(name: "byUser")
+  postID: ID! @index(name: "byPost")
+
+  User: User @belongsTo(fields: ["userID"])
+  Post: Post @belongsTo(fields: ["postID"])
+}
+
+type Comment @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  comment: String!
+  userID: ID! @index(name: "byUser")
+  postID: ID! @index(name: "byPost")
+
+  User: User @belongsTo(fields: ["userID"])
+  Post: Post @belongsTo(fields: ["postID"])
+}
+
+type User @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  email: String!
+  username: String
+  name: String!
+  bio: String
+  image: String
+  webiste: AWSURL
+  nofPosts: Int!
+  nofFollowers: Int!
+  nofFollowings: Int!
+  Posts: [Post] @hasMany(indexName: "byUser", fields: ["id"])
+  Comments: [Comment] @hasMany(indexName: "byUser", fields: ["id"])
+  Likes: [Like] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Post @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  description: String
+  image: String
+  images: [String!]
+  video: String
+  nofComments: Int!
+  nofLikes: Int!
+  userID: ID! @index(name: "byUser")
+  User: User @belongsTo(fields: ["userID"])
+  Likes: [Like] @hasMany(indexName: "byPost", fields: ["id"])
+  Comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+}

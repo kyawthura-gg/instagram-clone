@@ -44,9 +44,9 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         {/* Image */}
         <Image
           className="bg-purple-400 w-8 h-8 rounded-full"
-          source={{ uri: post.user.image }}
+          source={{ uri: post?.User?.image }}
         />
-        <Text className="font-semibold ml-2">{post.user.username}</Text>
+        <Text className="font-semibold ml-2">{post.User?.username}</Text>
         <Entypo
           name="dots-three-horizontal"
           size={16}
@@ -79,7 +79,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
           <Text className="font-bold">{post.nofLikes} others</Text>
         </Text>
         <Text className="mt-1" numberOfLines={readMore ? 0 : 3}>
-          <Text className="font-bold">{post.user.username} </Text>
+          <Text className="font-bold">{post.User?.username} </Text>
           {post.description}
         </Text>
         <Text onPress={toggleMore} className="text-gray-400">
@@ -91,7 +91,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         >
           View all {post.nofComments} comments
         </Text>
-        {post.comments.map((comment) => (
+        {post?.Comments?.items.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))}
 
