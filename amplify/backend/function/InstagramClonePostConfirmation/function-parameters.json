@@ -13,5 +13,13 @@
   "triggerEventPath": "PostConfirmation.event.json",
   "roleName": "InstagramClonePostConfirmation",
   "skipEdit": true,
-  "enableCors": false
+  "enableCors": false,
+  "permissions": {
+    "api": {
+      "InstagramClone": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  }
 }

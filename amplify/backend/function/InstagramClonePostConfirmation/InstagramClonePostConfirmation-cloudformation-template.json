@@ -43,6 +43,18 @@
     },
     "s3Key": {
       "Type": "String"
+    },
+    "apiInstagramCloneGraphQLAPIIdOutput": {
+      "Type": "String",
+      "Default": "apiInstagramCloneGraphQLAPIIdOutput"
+    },
+    "apiInstagramCloneGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "apiInstagramCloneGraphQLAPIEndpointOutput"
+    },
+    "apiInstagramCloneGraphQLAPIKeyOutput": {
+      "Type": "String",
+      "Default": "apiInstagramCloneGraphQLAPIKeyOutput"
     }
   },
   "Conditions": {
@@ -95,6 +107,15 @@
             },
             "GROUP": {
               "Ref": "GROUP"
+            },
+            "API_INSTAGRAMCLONE_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apiInstagramCloneGraphQLAPIIdOutput"
+            },
+            "API_INSTAGRAMCLONE_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apiInstagramCloneGraphQLAPIEndpointOutput"
+            },
+            "API_INSTAGRAMCLONE_GRAPHQLAPIKEYOUTPUT": {
+              "Ref": "apiInstagramCloneGraphQLAPIKeyOutput"
             }
           }
         },
@@ -193,6 +214,123 @@
                   }
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    "AmplifyResourcesPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "appsync:GraphQL"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appsync:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apis/",
+                      {
+                        "Ref": "apiInstagramCloneGraphQLAPIIdOutput"
+                      },
+                      "/types/Query/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appsync:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apis/",
+                      {
+                        "Ref": "apiInstagramCloneGraphQLAPIIdOutput"
+                      },
+                      "/types/Mutation/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "LambdaDynamoDBPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "dynamo-db-read-items-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
+                    {
+                      "tablename": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "User-",
+                            {
+                              "Ref": "apiInstagramCloneGraphQLAPIIdOutput"
+                            },
+                            "-",
+                            {
+                              "Ref": "env"
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

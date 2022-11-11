@@ -1,4 +1,10 @@
-/**
+/* Amplify Params - DO NOT EDIT
+	API_INSTAGRAMCLONE_GRAPHQLAPIENDPOINTOUTPUT
+	API_INSTAGRAMCLONE_GRAPHQLAPIIDOUTPUT
+	API_INSTAGRAMCLONE_GRAPHQLAPIKEYOUTPUT
+	ENV
+	REGION
+Amplify Params - DO NOT EDIT *//**
  * @fileoverview
  *
  * This CloudFormation Trigger creates a handler which awaits the other handlers
