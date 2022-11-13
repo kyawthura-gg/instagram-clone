@@ -5,6 +5,7 @@ import * as WebBrowser from "expo-web-browser";
 import { MainNavigator } from "./src/navigators";
 import { AuthContextProvider } from "./src/contexts/auth-context";
 import { Linking, Platform } from "react-native";
+import { Client } from "./src/apollo/client";
 
 async function urlOpener(url: string, redirectUrl: string) {
   const result = await WebBrowser.openAuthSessionAsync(url, redirectUrl);
@@ -27,7 +28,9 @@ function App() {
   return (
     <SafeAreaView className="flex-1">
       <AuthContextProvider>
-        <MainNavigator />
+        <Client>
+          <MainNavigator />
+        </Client>
       </AuthContextProvider>
     </SafeAreaView>
   );
