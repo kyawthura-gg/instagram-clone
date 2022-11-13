@@ -20,11 +20,11 @@ type Comment @model @auth(rules: [{ allow: public }]) {
 type User @model @auth(rules: [{ allow: public }]) {
   id: ID!
   email: String!
-  username: String
+  username: String @index(name: "userByUsername", queryField: "userByUsername")
   name: String!
   bio: String
   image: String
-  webiste: AWSURL
+  website: AWSURL
   nofPosts: Int!
   nofFollowers: Int!
   nofFollowings: Int!
