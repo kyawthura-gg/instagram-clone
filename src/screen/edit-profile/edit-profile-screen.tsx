@@ -1,13 +1,34 @@
 import React, { useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
-import { Image, Text, TextInput, TextInputProps, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { IUser } from "../../interfaces/user.interface";
-import user from "../../mocks/user.json";
+import {
+  DeleteUserMutationVariables,
+  GetUserQuery,
+  GetUserQueryVariables,
+  UpdateUserMutation,
+  UpdateUserMutationVariables,
+  User as UserType,
+} from "../../API";
+import { useMutation, useQuery } from "@apollo/client";
+import { getUser } from "../../apollo/user-queries";
+import { useAuthContext } from "../../contexts/auth-context";
+import { ErrorMessage } from "../../components/core/error-message";
+import { deleteUser, updateUser } from "../../apollo/user-mutations";
+import { RootStackScreenProps } from "../../navigators";
+import { Auth } from "aws-amplify";
 
 type IEditableFields = "name" | "username" | "website" | "bio";
 
-type IEditable = Pick<IUser, IEditableFields>;
+type IEditable = Pick<UserType, IEditableFields>;
 
 interface IFormInput extends TextInputProps {
   label: string;
@@ -32,7 +53,7 @@ const FormInput = ({
         <Text className="w-20 mt-3">{label}</Text>
         <View className="flex-1">
           <TextInput
-            value={value}
+            value={value ?? ""}
             onChangeText={onChange}
             onBlur={onBlur}
             placeholder={label}
@@ -51,16 +72,36 @@ const FormInput = ({
     )}
   />
 );
-export const EditProfileScreen = () => {
+export const EditProfileScreen = ({
+  navigation: { goBack },
+}: RootStackScreenProps<"EditProfile">) => {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const { control, handleSubmit } = useForm<IEditable>({
-    defaultValues: {
-      name: user.name,
-      bio: user.bio,
-      username: user.username,
-      website: "",
+  const { control, handleSubmit, setValue } = useForm<IEditable>();
+  const { userId, user: authUser } = useAuthContext();
+  const { data, loading, error } = useQuery<
+    GetUserQuery,
+    GetUserQueryVariables
+  >(getUser, {
+    variables: { id: userId },
+    onCompleted: (data) => {
+      const user = data.getUser;
+      setValue("name", user.name);
+      setValue("username", user.username);
+      setValue("bio", user.bio);
+      setValue("website", user.website);
     },
   });
+  const user = data?.getUser;
+
+  const [updateMutation, { loading: updating, error: updateErr }] = useMutation<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >(updateUser);
+
+  const [deleteUserMutation, { loading: deleting }] = useMutation<
+    any,
+    DeleteUserMutationVariables
+  >(deleteUser);
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -75,7 +116,48 @@ export const EditProfileScreen = () => {
     }
   };
 
-  const onSubmit = (data: IEditable) => console.log(data);
+  const onSubmit = async (formData: IEditable) => {
+    await updateMutation({
+      variables: {
+        input: { ...formData, id: userId, _version: user._version },
+      },
+    });
+    goBack();
+  };
+
+  const handleDelete = () => {
+    Alert.alert("Delete User", "Are you sure want to delete permanently?", [
+      {
+        text: "Cancel",
+      },
+      {
+        text: "Yes",
+        style: "destructive",
+        onPress: onDelete,
+      },
+    ]);
+  };
+
+  const onDelete = async () => {
+    await deleteUserMutation({
+      variables: { input: { id: userId, _version: user._version } },
+    });
+    authUser.deleteUser((response) => {
+      console.log("delete user:", response);
+      Auth.signOut();
+    });
+  };
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return (
+      <ErrorMessage title="Error fetching user" message={error?.message} />
+    );
+  }
+
   return (
     <View className="flex-1 px-3">
       <Image
@@ -102,12 +184,7 @@ export const EditProfileScreen = () => {
         name="username"
         label="Username"
       />
-      <FormInput
-        control={control}
-        rules={{ required: "Website required" }}
-        name="website"
-        label="Website"
-      />
+      <FormInput control={control} name="website" label="Website" />
       <FormInput
         control={control}
         rules={{ required: "Bio required" }}
@@ -119,7 +196,14 @@ export const EditProfileScreen = () => {
         onPress={handleSubmit(onSubmit)}
         className="mt-4 text-blue-500 font-semibold text-center mb-4"
       >
-        Submit
+        {updating ? "Updating ..." : "Submit"}
+      </Text>
+
+      <Text
+        onPress={handleDelete}
+        className="mt-4 text-red-500 font-semibold text-center mb-4"
+      >
+        {deleting ? "Deleting ..." : "DELETE"}
       </Text>
     </View>
   );

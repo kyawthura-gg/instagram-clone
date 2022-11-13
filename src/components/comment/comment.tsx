@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../../theme";
-import { Comment as IComment } from "../../API";
+import { Comment as CommentType } from "../../API";
 
 interface IProps {
-  comment: IComment;
+  comment: CommentType;
   showDetails?: boolean;
 }
 export const Comment = ({ comment, showDetails }: IProps) => {

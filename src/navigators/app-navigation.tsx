@@ -3,8 +3,10 @@ import { ActivityIndicator, View } from "react-native";
 import { useAuthContext } from "../contexts/auth-context";
 import { CommentScreen } from "../screen/comment";
 import { ConfirmEmailScreen } from "../screen/confirm-email/confirm-email-screen";
+import { EditProfileScreen } from "../screen/edit-profile";
 import { ForgotPasswordScreen } from "../screen/forgot-password/forgot-password-screen";
 import { NewPasswordScreen } from "../screen/new-password/new-password-screen";
+import { ProfileScreen } from "../screen/profile";
 import { SignInScreen } from "../screen/sign-in";
 import { SignUpScreen } from "../screen/sign-up";
 import { colors } from "../theme";
@@ -54,6 +56,8 @@ export const AppNavigators = () => {
             component={BottomTab}
           />
           <RootStack.Screen name="Comment" component={CommentScreen} />
+          <RootStack.Screen name="Profile" component={ProfileScreen} />
+          <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
         </>
       )}
     </RootStack.Navigator>

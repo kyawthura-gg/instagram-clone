@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Tab: NavigatorScreenParams<BottomTabType>;
   Comment: undefined;
   EditProfile: undefined;
+  Profile: { id: string } | undefined;
 } & AuthStackType;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -19,7 +20,7 @@ export type BottomTabType = {
   Search: undefined;
   Post: undefined;
   Notification: undefined;
-  Profile: undefined;
+  MyProfile: undefined;
 };
 
 type AuthStackType = {
@@ -28,7 +29,6 @@ type AuthStackType = {
   ConfirmEmail: { email?: string };
   ForgotPassword: undefined;
   NewPassword: undefined;
-  Profile: undefined;
 };
 
 export type BottomTabNavScreenProps<T extends keyof BottomTabType> =

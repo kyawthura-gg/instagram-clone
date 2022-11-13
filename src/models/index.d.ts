@@ -33,7 +33,7 @@ export declare class User {
   readonly name: string;
   readonly bio?: string | null;
   readonly image?: string | null;
-  readonly webiste?: string | null;
+  readonly website?: string | null;
   readonly nofPosts: number;
   readonly nofFollowers: number;
   readonly nofFollowings: number;

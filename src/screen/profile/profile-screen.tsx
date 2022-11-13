@@ -1,15 +1,29 @@
 import React from "react";
-import { FlatList, Image, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import user from "../../mocks/user.json";
 import { ProfileHeader } from "./profile-header";
+import { useQuery } from "@apollo/client";
+import { getUser } from "../../apollo/user-queries";
+import { GetUserQuery, GetUserQueryVariables } from "../../API";
+import { RootStackScreenProps } from "../../navigators";
+import { ErrorMessage } from "../../components/core/error-message";
+import { useAuthContext } from "../../contexts/auth-context";
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({ route }: RootStackScreenProps<"Profile">) => {
+  const userId = route.params?.id;
+  const { userId: authUserId } = useAuthContext();
+  const { data, loading, error, refetch } = useQuery<
+    GetUserQuery,
+    GetUserQueryVariables
+  >(getUser, {
+    variables: { id: userId ?? authUserId },
+  });
+
   const renderItem = ({
     item,
     index,
   }: {
-    item: typeof user.posts[number];
+    item: typeof user.Posts.items[number];
     index: number;
   }) => {
     const realIndex = index + 1;
@@ -37,10 +51,27 @@ export const ProfileScreen = () => {
     );
   };
 
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return (
+      <ErrorMessage
+        title="Error fetching user"
+        message={error?.message}
+        onRetry={refetch}
+      />
+    );
+  }
+
+  const user = data.getUser;
+
   return (
     <FlatList
+      onRefresh={refetch}
+      refreshing={loading}
       className="flex-1"
-      data={user.posts}
+      data={user.Posts?.items}
       renderItem={renderItem}
       numColumns={3}
       ListHeaderComponent={() => <ProfileHeader user={user} />}

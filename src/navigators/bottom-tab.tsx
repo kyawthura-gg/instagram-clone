@@ -8,6 +8,7 @@ import {
 import { HomeScreen } from "../screen/home";
 import { ProfileScreen } from "../screen/profile";
 import { BottomTabType } from "./navigator-types";
+import { SearchScreen } from "../screen/search/search-screen";
 
 const Tab = createBottomTabNavigator<BottomTabType>();
 
@@ -27,7 +28,7 @@ export const BottomTab = () => {
       />
       <Tab.Screen
         name="Search"
-        component={ProfileScreen}
+        component={SearchScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="search" size={size} color={color} />
@@ -61,7 +62,7 @@ export const BottomTab = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="MyProfile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

@@ -17,8 +17,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const toggleMore = () => setReadMore((r) => !r);
   const toggleLike = () => setIsLiked((l) => !l);
 
-  console.log("isVisible", isVisible);
-  const navigateToUser = (userId: string) => navigate("Profile");
+  const navigateToUser = () => navigate("Profile", { id: post.User.id });
 
   let content = null;
   if (post.image) {
@@ -38,15 +37,19 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
     content = <VideoPlayer uri={post.video} shouldPlay={isVisible} />;
   }
 
+  console.log("uuu", post.User);
+
   return (
     <View className="mb-4">
       <View className="flex-row px-2 items-center mb-2">
         {/* Image */}
-        <Image
-          className="bg-purple-400 w-8 h-8 rounded-full"
-          source={{ uri: post?.User?.image }}
-        />
-        <Text className="font-semibold ml-2">{post.User?.username}</Text>
+        <Pressable onPress={navigateToUser} className="flex-row items-center">
+          <Image
+            className="bg-purple-400 w-8 h-8 rounded-full"
+            source={{ uri: post?.User?.image }}
+          />
+          <Text className="font-semibold ml-2">{post.User?.username}</Text>
+        </Pressable>
         <Entypo
           name="dots-three-horizontal"
           size={16}

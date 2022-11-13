@@ -1,62 +1,21 @@
-import { API, graphqlOperation } from "aws-amplify";
-import { useEffect, useRef, useState } from "react";
-import { FlatList, ViewToken } from "react-native";
-import { Post } from "../../API";
+import { useRef, useState } from "react";
+import { ActivityIndicator, FlatList, ViewToken } from "react-native";
 import { FeedPost } from "../../components/feed-post";
-// import { listPosts } from "../../graphql/queries";
+import { useQuery } from "@apollo/client";
+import { ListPostsQuery, ListPostsQueryVariables } from "../../API";
+import { ErrorMessage } from "../../components/core/error-message";
+import { listPosts } from "../../apollo/post-queries";
 
 const viewabilityConfig = {
   itemVisiblePercentThreshold: 51,
 };
 
-const listPosts = /* GraphQL */ `
-  query ListPosts(
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        description
-        image
-        images
-        video
-        nofComments
-        nofLikes
-        userID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        User {
-          id
-          name
-          username
-          image
-        }
-        Comments {
-          items {
-            id
-            comment
-            User {
-              id
-              name
-              username
-            }
-          }
-        }
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-
 export const HomeScreen = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [posts, setPosts] = useState([]);
+  const { data, loading, error, refetch } = useQuery<
+    ListPostsQuery,
+    ListPostsQueryVariables
+  >(listPosts);
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -64,15 +23,20 @@ export const HomeScreen = () => {
     },
   );
 
-  const fetchPosts = async () => {
-    const response = await API.graphql(graphqlOperation(listPosts));
-    setPosts(response?.data?.listPosts?.items as Post[]);
-    console.log("response", response?.data);
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return (
+      <ErrorMessage
+        title={"Error fetching post"}
+        message={error.message}
+        onRetry={refetch}
+      />
+    );
+  }
+  const posts = data?.listPosts?.items ?? [];
+  console.log("data", data?.listPosts?.items);
 
   return (
     <FlatList

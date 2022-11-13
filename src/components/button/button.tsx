@@ -14,7 +14,7 @@ export const Button = ({
 }: IButton) => {
   return (
     <Pressable
-      className={`flex-1 border-border border-[1px] px-2 py-2 items-center rounded-md ${className}`}
+      className={`border-border border-[1px] px-2 py-2 items-center rounded-md ${className}`}
       {...otherProps}
     >
       <Text className={`font-semibold ${labelClassName}`}>{label}</Text>
