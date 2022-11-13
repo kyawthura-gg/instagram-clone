@@ -58,6 +58,9 @@ exports.handler = async (event, context) => {
     id: userAttributes?.sub,
     name: userAttributes?.name,
     email: userAttributes?.email,
+    nofPosts: 0,
+    nofFollowers: 0,
+    nofFollowings: 0,
   };
   const isExist = await userExists(newUser.id);
   if (!isExist) {
