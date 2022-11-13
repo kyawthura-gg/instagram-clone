@@ -1,5 +1,8 @@
+import { useQuery } from "@apollo/client";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ActivityIndicator, View } from "react-native";
+import { GetUserQuery, GetUserQueryVariables } from "../API";
+import { getUser } from "../apollo/user-queries";
 import { useAuthContext } from "../contexts/auth-context";
 import { CommentScreen } from "../screen/comment";
 import { ConfirmEmailScreen } from "../screen/confirm-email/confirm-email-screen";
@@ -16,50 +19,65 @@ import { RootStackParamList } from "./navigator-types";
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigators = () => {
-  const { user } = useAuthContext();
+  const { user: authUser, userId } = useAuthContext();
+  const { data, loading } = useQuery<GetUserQuery, GetUserQueryVariables>(
+    getUser,
+    {
+      variables: { id: userId },
+    },
+  );
+  const user = data?.getUser;
 
-  if (user === undefined) {
+  if (authUser === undefined || loading) {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator color={colors.primary} size={"small"} />
       </View>
     );
   }
+  let stackScreens = null;
 
-  return (
-    <RootStack.Navigator>
-      {!user ? (
-        <>
-          {/* Start of auth */}
-          <RootStack.Screen
-            name="SignIn"
-            component={SignInScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen name="SignUp" component={SignUpScreen} />
-          <RootStack.Screen
-            name="ConfirmEmail"
-            component={ConfirmEmailScreen}
-          />
-          <RootStack.Screen
-            name="ForgotPassword"
-            component={ForgotPasswordScreen}
-          />
-          <RootStack.Screen name="NewPassword" component={NewPasswordScreen} />
-          {/* End of auth */}
-        </>
-      ) : (
-        <>
-          <RootStack.Screen
-            options={{ headerShown: false }}
-            name="Tab"
-            component={BottomTab}
-          />
-          <RootStack.Screen name="Comment" component={CommentScreen} />
-          <RootStack.Screen name="Profile" component={ProfileScreen} />
-          <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
-        </>
-      )}
-    </RootStack.Navigator>
-  );
+  if (!authUser) {
+    stackScreens = (
+      <>
+        {/* Start of auth */}
+        <RootStack.Screen
+          name="SignIn"
+          component={SignInScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen name="SignUp" component={SignUpScreen} />
+        <RootStack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
+        <RootStack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
+        />
+        <RootStack.Screen name="NewPassword" component={NewPasswordScreen} />
+        {/* End of auth */}
+      </>
+    );
+  } else if (!user?.username) {
+    stackScreens = (
+      <RootStack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ title: "Setup Profile" }}
+      />
+    );
+  } else {
+    stackScreens = (
+      <>
+        <RootStack.Screen
+          options={{ headerShown: false }}
+          name="Tab"
+          component={BottomTab}
+        />
+        <RootStack.Screen name="Comment" component={CommentScreen} />
+        <RootStack.Screen name="Profile" component={ProfileScreen} />
+        <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
+      </>
+    );
+  }
+
+  return <RootStack.Navigator>{stackScreens}</RootStack.Navigator>;
 };

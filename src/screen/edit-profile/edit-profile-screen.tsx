@@ -17,9 +17,11 @@ import {
   UpdateUserMutation,
   UpdateUserMutationVariables,
   User as UserType,
+  UserByUsernameQuery,
+  UserByUsernameQueryVariables,
 } from "../../API";
-import { useMutation, useQuery } from "@apollo/client";
-import { getUser } from "../../apollo/user-queries";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { getUser, userByUsername } from "../../apollo/user-queries";
 import { useAuthContext } from "../../contexts/auth-context";
 import { ErrorMessage } from "../../components/core/error-message";
 import { deleteUser, updateUser } from "../../apollo/user-mutations";
@@ -73,7 +75,7 @@ const FormInput = ({
   />
 );
 export const EditProfileScreen = ({
-  navigation: { goBack },
+  navigation: { goBack, canGoBack },
 }: RootStackScreenProps<"EditProfile">) => {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const { control, handleSubmit, setValue } = useForm<IEditable>();
@@ -93,7 +95,7 @@ export const EditProfileScreen = ({
   });
   const user = data?.getUser;
 
-  const [updateMutation, { loading: updating, error: updateErr }] = useMutation<
+  const [updateMutation, { loading: updating }] = useMutation<
     UpdateUserMutation,
     UpdateUserMutationVariables
   >(updateUser);
@@ -102,6 +104,11 @@ export const EditProfileScreen = ({
     any,
     DeleteUserMutationVariables
   >(deleteUser);
+
+  const [getUserByUsername] = useLazyQuery<
+    UserByUsernameQuery,
+    UserByUsernameQueryVariables
+  >(userByUsername);
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -122,7 +129,9 @@ export const EditProfileScreen = ({
         input: { ...formData, id: userId, _version: user._version },
       },
     });
-    goBack();
+    if (canGoBack()) {
+      goBack();
+    }
   };
 
   const handleDelete = () => {
@@ -146,6 +155,22 @@ export const EditProfileScreen = ({
       console.log("delete user:", response);
       Auth.signOut();
     });
+  };
+
+  const validateUsername = async (username: string) => {
+    try {
+      const { data } = await getUserByUsername({ variables: { username } });
+      const usernames = data?.userByUsername?.items;
+      if (usernames.length === 0 || usernames?.[0]?.id === userId) {
+        console.log("not taken");
+        return true;
+      }
+    } catch (error) {
+      console.log("err", error);
+    }
+    console.log("taken");
+
+    return "Username already taken";
   };
 
   if (loading) {
@@ -180,7 +205,7 @@ export const EditProfileScreen = ({
       />
       <FormInput
         control={control}
-        rules={{ required: "UserName required" }}
+        rules={{ required: "UserName required", validate: validateUsername }}
         name="username"
         label="Username"
       />

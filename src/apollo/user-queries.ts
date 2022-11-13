@@ -55,3 +55,53 @@ export const listUsers = gql`
     }
   }
 `;
+
+export const userByUsername = gql`
+  query UserByUsername(
+    $username: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    userByUsername(
+      username: $username
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        email
+        username
+        name
+        bio
+        image
+        website
+        nofPosts
+        nofFollowers
+        nofFollowings
+        Posts {
+          nextToken
+          startedAt
+        }
+        Comments {
+          nextToken
+          startedAt
+        }
+        Likes {
+          nextToken
+          startedAt
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
