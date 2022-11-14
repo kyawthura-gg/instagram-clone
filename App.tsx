@@ -6,6 +6,7 @@ import { MainNavigator } from "./src/navigators";
 import { AuthContextProvider } from "./src/contexts/auth-context";
 import { Linking, Platform } from "react-native";
 import { Client } from "./src/apollo/client";
+import { MenuProvider } from "react-native-popup-menu";
 
 async function urlOpener(url: string, redirectUrl: string) {
   const result = await WebBrowser.openAuthSessionAsync(url, redirectUrl);
@@ -27,11 +28,13 @@ Amplify.configure({
 function App() {
   return (
     <SafeAreaView className="flex-1">
-      <AuthContextProvider>
-        <Client>
-          <MainNavigator />
-        </Client>
-      </AuthContextProvider>
+      <MenuProvider>
+        <AuthContextProvider>
+          <Client>
+            <MainNavigator />
+          </Client>
+        </AuthContextProvider>
+      </MenuProvider>
     </SafeAreaView>
   );
 }
