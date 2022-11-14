@@ -9,6 +9,7 @@ import { HomeScreen } from "../screen/home";
 import { ProfileScreen } from "../screen/profile";
 import { BottomTabType } from "./navigator-types";
 import { SearchScreen } from "../screen/search/search-screen";
+import { CameraScreen } from "../screen/camera";
 
 const Tab = createBottomTabNavigator<BottomTabType>();
 
@@ -37,8 +38,9 @@ export const BottomTab = () => {
       />
       <Tab.Screen
         name="Post"
-        component={ProfileScreen}
+        component={CameraScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="plus-circle-outline"

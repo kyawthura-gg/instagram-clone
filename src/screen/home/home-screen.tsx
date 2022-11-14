@@ -16,6 +16,7 @@ export const HomeScreen = () => {
     ListPostsQuery,
     ListPostsQueryVariables
   >(listPosts);
+  const posts = data?.listPosts?.items ?? [];
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -35,11 +36,13 @@ export const HomeScreen = () => {
       />
     );
   }
-  const posts = data?.listPosts?.items ?? [];
+
   console.log("data", data?.listPosts?.items);
 
   return (
     <FlatList
+      onRefresh={refetch}
+      refreshing={loading}
       data={posts}
       renderItem={({ item }) => (
         <FeedPost post={item} isVisible={item.id === activeId} />

@@ -10,6 +10,14 @@ export type RootStackParamList = {
   Comment: undefined;
   EditProfile: undefined;
   Profile: { id: string } | undefined;
+  CreatePost: {
+    image?: string;
+    images?: string[];
+    video?: string;
+  };
+  UpdatePost: {
+    id: string;
+  };
 } & AuthStackType;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

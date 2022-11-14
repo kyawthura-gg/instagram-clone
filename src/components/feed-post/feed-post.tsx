@@ -8,6 +8,7 @@ import { colors } from "../../theme";
 import { Carousel } from "../carousel";
 import { VideoPlayer } from "../video-player";
 import { useNavigation } from "@react-navigation/native";
+import { PostMenu } from "./post-menu";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
@@ -50,13 +51,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
           />
           <Text className="font-semibold ml-2">{post.User?.username}</Text>
         </Pressable>
-        <Entypo
-          name="dots-three-horizontal"
-          size={16}
-          style={{
-            marginLeft: "auto",
-          }}
-        />
+        <PostMenu post={post} />
       </View>
       {/* Image */}
       {content}
@@ -94,9 +89,10 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         >
           View all {post.nofComments} comments
         </Text>
-        {post?.Comments?.items.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
-        ))}
+        {post?.Comments?.items.map(
+          (comment) =>
+            comment && <Comment key={comment.id} comment={comment} />,
+        )}
 
         <Text className="text-gray-500 mt-1">{post.createdAt}</Text>
       </View>

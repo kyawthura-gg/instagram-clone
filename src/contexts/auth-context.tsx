@@ -11,10 +11,11 @@ import {
 type UserType = CognitoUser | null | undefined;
 interface AuthContextType {
   user: UserType;
-  userId?: string;
+  userId: string;
 }
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  userId: "",
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {

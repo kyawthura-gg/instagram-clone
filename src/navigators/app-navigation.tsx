@@ -9,12 +9,14 @@ import { ConfirmEmailScreen } from "../screen/confirm-email/confirm-email-screen
 import { EditProfileScreen } from "../screen/edit-profile";
 import { ForgotPasswordScreen } from "../screen/forgot-password/forgot-password-screen";
 import { NewPasswordScreen } from "../screen/new-password/new-password-screen";
+import { CreatePostScreen } from "../screen/create-post";
 import { ProfileScreen } from "../screen/profile";
 import { SignInScreen } from "../screen/sign-in";
 import { SignUpScreen } from "../screen/sign-up";
 import { colors } from "../theme";
 import { BottomTab } from "./bottom-tab";
 import { RootStackParamList } from "./navigator-types";
+import { UpdatePostScreen } from "../screen/update-post";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -75,6 +77,8 @@ export const AppNavigators = () => {
         <RootStack.Screen name="Comment" component={CommentScreen} />
         <RootStack.Screen name="Profile" component={ProfileScreen} />
         <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
+        <RootStack.Screen name="CreatePost" component={CreatePostScreen} />
+        <RootStack.Screen name="UpdatePost" component={UpdatePostScreen} />
       </>
     );
   }

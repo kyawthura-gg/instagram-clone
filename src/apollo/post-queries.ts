@@ -44,3 +44,81 @@ export const listPosts = gql`
     }
   }
 `;
+
+export const getPost = gql`
+  query GetPost($id: ID!) {
+    getPost(id: $id) {
+      id
+      description
+      image
+      images
+      video
+      nofComments
+      nofLikes
+      userID
+      User {
+        id
+        email
+        username
+        name
+        bio
+        image
+        website
+        nofPosts
+        nofFollowers
+        nofFollowings
+        Posts {
+          nextToken
+          startedAt
+        }
+        Comments {
+          nextToken
+          startedAt
+        }
+        Likes {
+          nextToken
+          startedAt
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      Likes {
+        items {
+          id
+          userID
+          postID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      Comments {
+        items {
+          id
+          comment
+          userID
+          postID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;

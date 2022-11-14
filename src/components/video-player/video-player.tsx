@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 interface IVideoPlayer {
   uri: string;
-  shouldPlay: boolean;
+  shouldPlay?: boolean;
 }
 export const VideoPlayer = ({ uri, shouldPlay }: IVideoPlayer) => {
   const [isMuted, setIsMuted] = useState(true);

@@ -9,6 +9,7 @@ import {
   VideoQuality,
 } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const FlashModes = [
   {
@@ -29,8 +30,9 @@ const FlashModes = [
   },
 ] as const;
 
-export const UploadPostScreen = () => {
+export const CameraScreen = () => {
   const cameraRef = useRef<Camera>(null);
+  const { navigate } = useNavigation();
   const [cameraType, setCameraType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [flashType, setFlashType] = useState(FlashMode.off);
@@ -38,7 +40,7 @@ export const UploadPostScreen = () => {
   const [isRecording, setIsRecording] = useState(false);
 
   const cameraNotReady = !cameraReady || !cameraRef.current;
-  const activeFlashIcon = FlashModes.find((x) => x.value === flashType).icon;
+  const activeFlashIcon = FlashModes?.find((x) => x.value === flashType)?.icon;
 
   const handleFlash = () => {
     const currentIndex = FlashModes.findIndex((x) => x.value === flashType);
@@ -81,7 +83,7 @@ export const UploadPostScreen = () => {
     if (!isRecording) {
       return;
     }
-    cameraRef.current.stopRecording();
+    cameraRef.current?.stopRecording();
     setIsRecording(false);
     console.warn("Stop recording");
   };
@@ -128,6 +130,22 @@ export const UploadPostScreen = () => {
             }`}
           />
         )}
+        {/* //TODO start of remove this */}
+        <Pressable
+          onPress={() => {
+            console.log("Post");
+            navigate("CreatePost", {
+              images: [
+                "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/3.jpg",
+                "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/3.jpg",
+              ],
+            });
+          }}
+          className={`bg-white w-12 h-12  rounded-full ${
+            isRecording ? "bg-red-500" : ""
+          }`}
+        />
+        {/* //TODO end of remove this */}
         <Pressable onPress={toggleCameraType}>
           <MaterialIcons name="flip-camera-ios" size={30} color={"#fff"} />
         </Pressable>
