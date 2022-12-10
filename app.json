@@ -4,8 +4,11 @@
     "slug": "ksta-clone",
     "scheme": "kstaclone",
     "version": "1.0.0",
-    "sdkVersion": "46.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "android": {
       "package": "com.kyawthura.kstaclone"
     },
