@@ -18,6 +18,7 @@ export type RootStackParamList = {
   UpdatePost: {
     id: string;
   };
+  PostLikes: { id: string };
 } & AuthStackType;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

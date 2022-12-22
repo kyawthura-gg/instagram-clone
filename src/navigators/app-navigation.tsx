@@ -17,6 +17,7 @@ import { colors } from "../theme";
 import { BottomTab } from "./bottom-tab";
 import { RootStackParamList } from "./navigator-types";
 import { UpdatePostScreen } from "../screen/update-post";
+import { PostLikesScreen } from "../screen/post-like/post-like";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,6 +80,11 @@ export const AppNavigators = () => {
         <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
         <RootStack.Screen name="CreatePost" component={CreatePostScreen} />
         <RootStack.Screen name="UpdatePost" component={UpdatePostScreen} />
+        <RootStack.Screen
+          name="PostLikes"
+          component={PostLikesScreen}
+          options={{ title: "Post Likes" }}
+        />
       </>
     );
   }
