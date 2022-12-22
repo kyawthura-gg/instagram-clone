@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
-import { Entypo, AntDesign, Ionicons, Feather } from "@expo/vector-icons";
+import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { IFeedPost } from "./feed-post.props";
 import { Comment } from "../comment";
 import { DoublePress } from "../double-press";
@@ -9,14 +9,19 @@ import { Carousel } from "../carousel";
 import { VideoPlayer } from "../video-player";
 import { useNavigation } from "@react-navigation/native";
 import { PostMenu } from "./post-menu";
+import useLikeService from "../../hooks/useLikeServices";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
-  const [isLiked, setIsLiked] = useState(false);
   const [readMore, setReadMore] = useState(false);
+  const { toggleLike, isLiked } = useLikeService(post);
+  const postLikes = post.Likes?.items.filter((like) => !like?._deleted) || [];
 
   const toggleMore = () => setReadMore((r) => !r);
-  const toggleLike = () => setIsLiked((l) => !l);
+
+  const navigateToLikes = () => {
+    navigate("PostLikes", { id: post.id });
+  };
 
   const navigateToUser = () => navigate("Profile", { id: post.User.id });
 
@@ -37,8 +42,6 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   } else if (post.video) {
     content = <VideoPlayer uri={post.video} shouldPlay={isVisible} />;
   }
-
-  console.log("uuu", post.User);
 
   return (
     <View className="mb-4">
@@ -72,10 +75,21 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         <Feather name="bookmark" size={24} style={{ marginLeft: "auto" }} />
       </View>
       <View className="mx-2">
-        <Text className="mt-1">
-          Liked by <Text className="font-bold">tomato</Text> and{" "}
-          <Text className="font-bold">{post.nofLikes} others</Text>
-        </Text>
+        {postLikes.length === 0 ? (
+          <Text className="mt-1">Be the first to like the post</Text>
+        ) : (
+          <Text className="mt-1" onPress={navigateToLikes}>
+            Liked by{" "}
+            <Text className="font-bold">{postLikes[0]?.User?.username}</Text>
+            {postLikes.length > 1 && (
+              <>
+                {" "}
+                and{" "}
+                <Text className="font-bold">{post.nofLikes - 1} others</Text>
+              </>
+            )}
+          </Text>
+        )}
         <Text className="mt-1" numberOfLines={readMore ? 0 : 3}>
           <Text className="font-bold">{post.User?.username} </Text>
           {post.description}
