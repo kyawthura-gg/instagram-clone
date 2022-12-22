@@ -22,7 +22,7 @@
     "aws-amplify-react-native": "^6.0.5",
     "aws-appsync-auth-link": "^3.0.7",
     "aws-appsync-subscription-link": "^3.1.1",
-    "expo": "~47.0.8",
+    "expo": "~47.0.9",
     "expo-av": "~13.0.2",
     "expo-camera": "~13.1.0",
     "expo-image-picker": "~14.0.2",
