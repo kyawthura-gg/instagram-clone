@@ -41,6 +41,7 @@ export const HomeScreen = () => {
 
   return (
     <FlatList
+      className="bg-white"
       onRefresh={refetch}
       refreshing={loading}
       data={posts}

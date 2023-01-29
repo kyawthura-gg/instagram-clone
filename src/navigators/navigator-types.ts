@@ -7,7 +7,7 @@ import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 export type RootStackParamList = {
   Tab: NavigatorScreenParams<BottomTabType>;
-  Comment: undefined;
+  Comment: { postId: string };
   EditProfile: undefined;
   Profile: { id: string } | undefined;
   CreatePost: {

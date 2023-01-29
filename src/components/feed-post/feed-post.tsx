@@ -15,7 +15,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
   const [readMore, setReadMore] = useState(false);
   const { toggleLike, isLiked } = useLikeService(post);
-  const postLikes = post.Likes?.items.filter((like) => !like?._deleted) || [];
+  const postLikes = post?.Likes?.items.filter((like) => !like?._deleted) || [];
 
   const toggleMore = () => setReadMore((r) => !r);
 
@@ -23,7 +23,8 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
     navigate("PostLikes", { id: post.id });
   };
 
-  const navigateToUser = () => navigate("Profile", { id: post.User.id });
+  const navigateToUser = () =>
+    post.User && navigate("Profile", { id: post.User.id });
 
   let content = null;
   if (post.image) {
@@ -98,15 +99,17 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
           {readMore ? "less" : "more"}
         </Text>
         <Text
-          onPress={() => navigate("Comment")}
+          onPress={() => navigate("Comment", { postId: post.id })}
           className="text-gray-500 mt-1"
         >
           View all {post.nofComments} comments
         </Text>
-        {post?.Comments?.items.map(
-          (comment) =>
-            comment && <Comment key={comment.id} comment={comment} />,
-        )}
+        {post?.Comments?.items
+          ?.slice(0, 2)
+          .map(
+            (comment) =>
+              comment && <Comment key={comment.id} comment={comment} />,
+          )}
 
         <Text className="text-gray-500 mt-1">{post.createdAt}</Text>
       </View>

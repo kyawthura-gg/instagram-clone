@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { colors } from "../../theme";
 import { Comment as CommentType } from "../../API";
 
+dayjs.extend(relativeTime);
+
 interface IProps {
-  comment: CommentType;
+  comment: CommentType | null;
   showDetails?: boolean;
 }
 export const Comment = ({ comment, showDetails }: IProps) => {
@@ -13,6 +17,9 @@ export const Comment = ({ comment, showDetails }: IProps) => {
 
   const toggleLike = () => setIsLiked((l) => !l);
 
+  if (!comment) {
+    return null;
+  }
   return (
     <View className="flex-row mb-1 items-center">
       {showDetails ? (
@@ -28,7 +35,9 @@ export const Comment = ({ comment, showDetails }: IProps) => {
         </Text>
         {showDetails ? (
           <View className="flex-row mt-1 mb-2">
-            <Text className="mr-2 text-gray-500">2d</Text>
+            <Text className="mr-2 text-gray-500">
+              {dayjs(comment.createdAt).fromNow()}
+            </Text>
             <Text className="mr-2 text-gray-500">5 likes</Text>
             <Text className="text-gray-500">Reply</Text>
           </View>
