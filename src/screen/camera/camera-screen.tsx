@@ -10,6 +10,8 @@ import {
 } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 
 const FlashModes = [
   {
@@ -33,6 +35,7 @@ const FlashModes = [
 export const CameraScreen = () => {
   const cameraRef = useRef<Camera>(null);
   const { navigate } = useNavigation();
+  const { top } = useSafeAreaInsets();
   const [cameraType, setCameraType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [flashType, setFlashType] = useState(FlashMode.off);
@@ -58,7 +61,9 @@ export const CameraScreen = () => {
       skipProcessing: true,
     };
     const result = await cameraRef.current.takePictureAsync(options);
-    console.log(result);
+    navigate("CreatePost", {
+      image: result.uri,
+    });
   };
   const recordVideo = async () => {
     if (cameraNotReady || isRecording) {
@@ -88,7 +93,19 @@ export const CameraScreen = () => {
     console.warn("Stop recording");
   };
 
-  console.log(permission?.granted);
+  const openImageGallery = async () => {
+    const { assets, canceled } = await launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.Images,
+    });
+    if (!canceled && assets && assets.length > 0) {
+      if (assets.length === 1) {
+        navigate("CreatePost", {
+          image: assets[0].uri,
+        });
+      }
+    }
+  };
+
   if (!permission?.granted) {
     requestPermission();
     console.log(permission?.granted);
@@ -108,7 +125,10 @@ export const CameraScreen = () => {
         ratio="4:3"
         onCameraReady={() => setCameraReady(true)}
       />
-      <View className="absolute top-5 flex-row justify-around w-full items-center">
+      <View
+        className="absolute flex-row justify-around w-full items-center"
+        style={{ top: top + 20 }}
+      >
         <MaterialIcons name="close" size={30} color={"#fff"} />
         <MaterialIcons
           onPress={handleFlash}
@@ -119,7 +139,9 @@ export const CameraScreen = () => {
         <MaterialIcons name="settings" size={30} color={"#fff"} />
       </View>
       <View className="absolute flex-row bottom-5 justify-around w-full items-center">
-        <MaterialIcons name="photo-library" size={30} color={"#fff"} />
+        <Pressable onPress={openImageGallery}>
+          <MaterialIcons name="photo-library" size={30} color={"#fff"} />
+        </Pressable>
         {cameraReady && (
           <Pressable
             onPress={takePic}
@@ -130,22 +152,6 @@ export const CameraScreen = () => {
             }`}
           />
         )}
-        {/* //TODO start of remove this */}
-        <Pressable
-          onPress={() => {
-            console.log("Post");
-            navigate("CreatePost", {
-              images: [
-                "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/3.jpg",
-                "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/3.jpg",
-              ],
-            });
-          }}
-          className={`bg-white w-12 h-12  rounded-full ${
-            isRecording ? "bg-red-500" : ""
-          }`}
-        />
-        {/* //TODO end of remove this */}
         <Pressable onPress={toggleCameraType}>
           <MaterialIcons name="flip-camera-ios" size={30} color={"#fff"} />
         </Pressable>

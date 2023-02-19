@@ -12,6 +12,7 @@ import { PostMenu } from "./post-menu";
 import useLikeService from "../../hooks/useLikeServices";
 import dayjs from "dayjs";
 import { Avatar } from "../avatar";
+import { Content } from "./content";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
@@ -28,24 +29,6 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const navigateToUser = () =>
     post.User && navigate("Profile", { id: post.User.id });
 
-  let content = null;
-  if (post.image) {
-    content = (
-      <DoublePress onDoublePress={toggleLike}>
-        <Image
-          className="w-full h-[300px] "
-          source={{
-            uri: post.image,
-          }}
-        />
-      </DoublePress>
-    );
-  } else if (post.images) {
-    content = <Carousel images={post.images} />;
-  } else if (post.video) {
-    content = <VideoPlayer uri={post.video} shouldPlay={isVisible} />;
-  }
-
   return (
     <View className="mb-4">
       <View className="flex-row px-2 items-center mb-2">
@@ -56,8 +39,10 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
         </Pressable>
         <PostMenu post={post} />
       </View>
-      {/* Image */}
-      {content}
+
+      <DoublePress onDoublePress={toggleLike}>
+        <Content post={post} isVisible={isVisible} />
+      </DoublePress>
       <View className="flex-row mt-2 mx-2">
         <Pressable onPress={toggleLike}>
           <AntDesign
