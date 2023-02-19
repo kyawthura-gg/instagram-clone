@@ -2,9 +2,13 @@ import { useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ViewToken } from "react-native";
 import { FeedPost } from "../../components/feed-post";
 import { useQuery } from "@apollo/client";
-import { ListPostsQuery, ListPostsQueryVariables } from "../../API";
+import {
+  ModelSortDirection,
+  PostsByDateQuery,
+  PostsByDateQueryVariables,
+} from "../../API";
 import { ErrorMessage } from "../../components/core/error-message";
-import { listPosts } from "../../apollo/post-queries";
+import { postsByDate } from "../../apollo/post-queries";
 
 const viewabilityConfig = {
   itemVisiblePercentThreshold: 51,
@@ -13,10 +17,16 @@ const viewabilityConfig = {
 export const HomeScreen = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const { data, loading, error, refetch } = useQuery<
-    ListPostsQuery,
-    ListPostsQueryVariables
-  >(listPosts);
-  const posts = data?.listPosts?.items ?? [];
+    PostsByDateQuery,
+    PostsByDateQueryVariables
+  >(postsByDate, {
+    variables: { type: "POST", sortDirection: ModelSortDirection.DESC },
+  });
+  const posts = (data?.postsByDate?.items || []).filter(
+    (post) => !post?._deleted,
+  );
+
+  console.log({ data: data?.postsByDate });
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -37,17 +47,15 @@ export const HomeScreen = () => {
     );
   }
 
-  console.log("data", data?.listPosts?.items);
-
   return (
     <FlatList
       className="bg-white"
       onRefresh={refetch}
       refreshing={loading}
       data={posts}
-      renderItem={({ item }) => (
-        <FeedPost post={item} isVisible={item.id === activeId} />
-      )}
+      renderItem={({ item }) =>
+        item ? <FeedPost post={item} isVisible={item.id === activeId} /> : null
+      }
       showsVerticalScrollIndicator={false}
       viewabilityConfig={viewabilityConfig}
       onViewableItemsChanged={onViewableItemsChanged.current}

@@ -10,6 +10,7 @@ import { VideoPlayer } from "../video-player";
 import { useNavigation } from "@react-navigation/native";
 import { PostMenu } from "./post-menu";
 import useLikeService from "../../hooks/useLikeServices";
+import dayjs from "dayjs";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
@@ -111,7 +112,9 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
               comment && <Comment key={comment.id} comment={comment} />,
           )}
 
-        <Text className="text-gray-500 mt-1">{post.createdAt}</Text>
+        <Text className="text-gray-500 mt-1">
+          {dayjs(post.createdAt).fromNow()}
+        </Text>
       </View>
     </View>
   );

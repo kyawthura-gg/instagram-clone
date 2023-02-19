@@ -28,6 +28,7 @@ export const CreatePostScreen = ({
     const response = await doCreatePost({
       variables: {
         input: {
+          type: "POST",
           description,
           image,
           images,

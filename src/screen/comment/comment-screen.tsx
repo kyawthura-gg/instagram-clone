@@ -1,7 +1,11 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import { CommentsByPostQuery, CommentsByPostQueryVariables } from "../../API";
+import {
+  CommentsByPostQuery,
+  CommentsByPostQueryVariables,
+  ModelSortDirection,
+} from "../../API";
 import { commentsByPost } from "../../apollo/comment";
 import { Comment } from "../../components/comment";
 import { ErrorMessage } from "../../components/core/error-message";
@@ -14,7 +18,9 @@ export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
   const { data, loading, error } = useQuery<
     CommentsByPostQuery,
     CommentsByPostQueryVariables
-  >(commentsByPost, { variables: { postID: postId } });
+  >(commentsByPost, {
+    variables: { postID: postId, sortDirection: ModelSortDirection.DESC },
+  });
 
   const comments = data?.commentsByPost?.items;
 
@@ -32,6 +38,7 @@ export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
         className="grow px-3"
         data={comments}
         renderItem={({ item }) => <Comment comment={item} showDetails />}
+        inverted
         ListEmptyComponent={() => (
           <Text className="text-center">No comments. Be the first comment</Text>
         )}

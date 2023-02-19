@@ -87,6 +87,9 @@ export const EditProfileScreen = ({
     variables: { id: userId },
     onCompleted: (data) => {
       const user = data.getUser;
+      if (!user) {
+        return;
+      }
       setValue("name", user.name);
       setValue("username", user.username);
       setValue("bio", user.bio);
@@ -126,7 +129,7 @@ export const EditProfileScreen = ({
   const onSubmit = async (formData: IEditable) => {
     await updateMutation({
       variables: {
-        input: { ...formData, id: userId, _version: user._version },
+        input: { ...formData, id: userId, _version: user?._version },
       },
     });
     if (canGoBack()) {
@@ -149,9 +152,9 @@ export const EditProfileScreen = ({
 
   const onDelete = async () => {
     await deleteUserMutation({
-      variables: { input: { id: userId, _version: user._version } },
+      variables: { input: { id: userId, _version: user?._version } },
     });
-    authUser.deleteUser((response) => {
+    authUser?.deleteUser((response) => {
       console.log("delete user:", response);
       Auth.signOut();
     });
@@ -161,7 +164,7 @@ export const EditProfileScreen = ({
     try {
       const { data } = await getUserByUsername({ variables: { username } });
       const usernames = data?.userByUsername?.items;
-      if (usernames.length === 0 || usernames?.[0]?.id === userId) {
+      if (usernames?.length === 0 || usernames?.[0]?.id === userId) {
         console.log("not taken");
         return true;
       }
@@ -177,9 +180,15 @@ export const EditProfileScreen = ({
     return <ActivityIndicator />;
   }
 
+  console.log({ error, data });
+
   if (error) {
     return (
-      <ErrorMessage title="Error fetching user" message={error?.message} />
+      <ErrorMessage
+        title="Error fetching user"
+        message={error?.message}
+        // onRetry={() => Auth.signOut()}
+      />
     );
   }
 
@@ -187,7 +196,7 @@ export const EditProfileScreen = ({
     <View className="flex-1 px-3">
       <Image
         source={{
-          uri: selectedPhoto ?? user.image,
+          uri: selectedPhoto ?? user?.image,
         }}
         className="w-[30%] aspect-square rounded-full self-center"
       />

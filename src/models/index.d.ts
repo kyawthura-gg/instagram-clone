@@ -11,11 +11,11 @@ type UserMetaData = {
 }
 
 type PostMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+  readOnlyFields: 'updatedAt';
 }
 
 type CommentMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+  readOnlyFields: 'updatedAt';
 }
 
 type EagerLike = {
@@ -84,6 +84,8 @@ export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) &
 
 type EagerPost = {
   readonly id: string;
+  readonly createdAt: string;
+  readonly type: string;
   readonly description?: string | null;
   readonly image?: string | null;
   readonly images?: string[] | null;
@@ -93,12 +95,13 @@ type EagerPost = {
   readonly User?: User | null;
   readonly Likes?: (Like | null)[] | null;
   readonly Comments?: (Comment | null)[] | null;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyPost = {
   readonly id: string;
+  readonly createdAt: string;
+  readonly type: string;
   readonly description?: string | null;
   readonly image?: string | null;
   readonly images?: string[] | null;
@@ -108,7 +111,6 @@ type LazyPost = {
   readonly User: AsyncItem<User | undefined>;
   readonly Likes: AsyncCollection<Like>;
   readonly Comments: AsyncCollection<Comment>;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
@@ -120,19 +122,19 @@ export declare const Post: (new (init: ModelInit<Post, PostMetaData>) => Post) &
 
 type EagerComment = {
   readonly id: string;
+  readonly createdAt: string;
   readonly comment: string;
   readonly User?: User | null;
   readonly Post?: Post | null;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyComment = {
   readonly id: string;
+  readonly createdAt: string;
   readonly comment: string;
   readonly User: AsyncItem<User | undefined>;
   readonly Post: AsyncItem<Post | undefined>;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
