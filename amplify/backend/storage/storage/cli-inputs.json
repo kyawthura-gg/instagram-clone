@@ -1,0 +1,14 @@
+{
+  "resourceName": "storage",
+  "policyUUID": "609fa2a9",
+  "bucketName": "instaclone-kyaw-media",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

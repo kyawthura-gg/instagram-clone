@@ -24,6 +24,9 @@
       },
       "api": {
         "InstagramClone": {}
+      },
+      "storage": {
+        "storage": {}
       }
     }
   }
