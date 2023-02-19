@@ -16,17 +16,30 @@ const viewabilityConfig = {
 
 export const HomeScreen = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const { data, loading, error, refetch } = useQuery<
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const { data, loading, error, refetch, fetchMore } = useQuery<
     PostsByDateQuery,
     PostsByDateQueryVariables
   >(postsByDate, {
-    variables: { type: "POST", sortDirection: ModelSortDirection.DESC },
+    variables: {
+      type: "POST",
+      sortDirection: ModelSortDirection.DESC,
+      limit: 6,
+    },
   });
   const posts = (data?.postsByDate?.items || []).filter(
     (post) => !post?._deleted,
   );
+  const nextToken = data?.postsByDate?.nextToken;
 
-  console.log({ data: data?.postsByDate });
+  const loadMore = async () => {
+    if (!nextToken || isFetchingMore) {
+      return;
+    }
+    setIsFetchingMore(true);
+    await fetchMore({ variables: { nextToken } });
+    setIsFetchingMore(false);
+  };
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -59,6 +72,7 @@ export const HomeScreen = () => {
       showsVerticalScrollIndicator={false}
       viewabilityConfig={viewabilityConfig}
       onViewableItemsChanged={onViewableItemsChanged.current}
+      onEndReached={loadMore}
     />
   );
 };

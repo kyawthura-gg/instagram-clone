@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import React from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import {
   CommentsByPostQuery,
@@ -14,15 +14,31 @@ import { Input } from "./input";
 
 export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
   const { postId } = route.params;
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const { data, loading, error } = useQuery<
+  const { data, loading, error, fetchMore } = useQuery<
     CommentsByPostQuery,
     CommentsByPostQueryVariables
   >(commentsByPost, {
-    variables: { postID: postId, sortDirection: ModelSortDirection.DESC },
+    variables: {
+      postID: postId,
+      sortDirection: ModelSortDirection.DESC,
+      limit: 1,
+    },
   });
 
   const comments = data?.commentsByPost?.items;
+  const nextToken = data?.commentsByPost?.nextToken;
+
+  const loadMore = async () => {
+    console.log("loading more posts");
+    if (!nextToken || isFetchingMore) {
+      return;
+    }
+    setIsFetchingMore(true);
+    await fetchMore({ variables: { nextToken } });
+    setIsFetchingMore(false);
+  };
 
   if (loading) {
     return <ActivityIndicator />;
@@ -38,10 +54,10 @@ export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
         className="grow px-3"
         data={comments}
         renderItem={({ item }) => <Comment comment={item} showDetails />}
-        inverted
         ListEmptyComponent={() => (
           <Text className="text-center">No comments. Be the first comment</Text>
         )}
+        onEndReached={loadMore}
       />
       <Input postId={postId} />
     </View>
