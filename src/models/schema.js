@@ -1,12 +1,26 @@
 export const schema = {
     "models": {
-        "Like": {
-            "name": "Like",
+        "Comment": {
+            "name": "Comment",
             "fields": {
                 "id": {
                     "name": "id",
                     "isArray": false,
                     "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "comment": {
+                    "name": "comment",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -36,14 +50,6 @@ export const schema = {
                         "targetName": "postID"
                     }
                 },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
@@ -54,7 +60,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Likes",
+            "pluralName": "Comments",
             "attributes": [
                 {
                     "type": "model",
@@ -73,10 +79,10 @@ export const schema = {
                     "type": "key",
                     "properties": {
                         "name": "byPost",
-                        "queryField": "likesForPostByUser",
+                        "queryField": "commentsByPost",
                         "fields": [
                             "postID",
-                            "userID"
+                            "createdAt"
                         ]
                     }
                 },
@@ -427,27 +433,13 @@ export const schema = {
                 }
             ]
         },
-        "Comment": {
-            "name": "Comment",
+        "Like": {
+            "name": "Like",
             "fields": {
                 "id": {
                     "name": "id",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "comment": {
-                    "name": "comment",
-                    "isArray": false,
-                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -477,6 +469,14 @@ export const schema = {
                         "targetName": "postID"
                     }
                 },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
@@ -487,7 +487,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Comments",
+            "pluralName": "Likes",
             "attributes": [
                 {
                     "type": "model",
@@ -506,10 +506,10 @@ export const schema = {
                     "type": "key",
                     "properties": {
                         "name": "byPost",
-                        "queryField": "commentsByPost",
+                        "queryField": "likesForPostByUser",
                         "fields": [
                             "postID",
-                            "createdAt"
+                            "userID"
                         ]
                     }
                 },

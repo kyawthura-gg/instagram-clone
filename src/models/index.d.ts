@@ -2,8 +2,8 @@ import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
-type LikeMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+type CommentMetaData = {
+  readOnlyFields: 'updatedAt';
 }
 
 type UserMetaData = {
@@ -14,30 +14,32 @@ type PostMetaData = {
   readOnlyFields: 'updatedAt';
 }
 
-type CommentMetaData = {
-  readOnlyFields: 'updatedAt';
+type LikeMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type EagerLike = {
+type EagerComment = {
   readonly id: string;
+  readonly createdAt: string;
+  readonly comment: string;
   readonly User?: User | null;
   readonly Post?: Post | null;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-type LazyLike = {
+type LazyComment = {
   readonly id: string;
+  readonly createdAt: string;
+  readonly comment: string;
   readonly User: AsyncItem<User | undefined>;
   readonly Post: AsyncItem<Post | undefined>;
-  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-export declare type Like = LazyLoading extends LazyLoadingDisabled ? EagerLike : LazyLike
+export declare type Comment = LazyLoading extends LazyLoadingDisabled ? EagerComment : LazyComment
 
-export declare const Like: (new (init: ModelInit<Like, LikeMetaData>) => Like) & {
-  copyOf(source: Like, mutator: (draft: MutableModel<Like, LikeMetaData>) => MutableModel<Like, LikeMetaData> | void): Like;
+export declare const Comment: (new (init: ModelInit<Comment, CommentMetaData>) => Comment) & {
+  copyOf(source: Comment, mutator: (draft: MutableModel<Comment, CommentMetaData>) => MutableModel<Comment, CommentMetaData> | void): Comment;
 }
 
 type EagerUser = {
@@ -120,26 +122,24 @@ export declare const Post: (new (init: ModelInit<Post, PostMetaData>) => Post) &
   copyOf(source: Post, mutator: (draft: MutableModel<Post, PostMetaData>) => MutableModel<Post, PostMetaData> | void): Post;
 }
 
-type EagerComment = {
+type EagerLike = {
   readonly id: string;
-  readonly createdAt: string;
-  readonly comment: string;
   readonly User?: User | null;
   readonly Post?: Post | null;
+  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-type LazyComment = {
+type LazyLike = {
   readonly id: string;
-  readonly createdAt: string;
-  readonly comment: string;
   readonly User: AsyncItem<User | undefined>;
   readonly Post: AsyncItem<Post | undefined>;
+  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-export declare type Comment = LazyLoading extends LazyLoadingDisabled ? EagerComment : LazyComment
+export declare type Like = LazyLoading extends LazyLoadingDisabled ? EagerLike : LazyLike
 
-export declare const Comment: (new (init: ModelInit<Comment, CommentMetaData>) => Comment) & {
-  copyOf(source: Comment, mutator: (draft: MutableModel<Comment, CommentMetaData>) => MutableModel<Comment, CommentMetaData> | void): Comment;
+export declare const Like: (new (init: ModelInit<Like, LikeMetaData>) => Like) & {
+  copyOf(source: Like, mutator: (draft: MutableModel<Like, LikeMetaData>) => MutableModel<Like, LikeMetaData> | void): Like;
 }

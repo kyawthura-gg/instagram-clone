@@ -1,4 +1,6 @@
-type Like @model @auth(rules: [{ allow: public }]) {
+type Like
+  @model
+  @auth(rules: [{ allow: private, operations: [read] }, { allow: owner }]) {
   id: ID!
   userID: ID! @index(name: "byUser")
   postID: ID!
@@ -12,7 +14,9 @@ type Like @model @auth(rules: [{ allow: public }]) {
   Post: Post @belongsTo(fields: ["postID"])
 }
 
-type Comment @model @auth(rules: [{ allow: public }]) {
+type Comment
+  @model
+  @auth(rules: [{ allow: private, operations: [read] }, { allow: owner }]) {
   id: ID!
   createdAt: AWSDateTime!
   comment: String!
@@ -28,9 +32,11 @@ type Comment @model @auth(rules: [{ allow: public }]) {
   Post: Post @belongsTo(fields: ["postID"])
 }
 
-type User @model @auth(rules: [{ allow: public }]) {
+type User
+  @model
+  @auth(rules: [{ allow: private, operations: [read] }, { allow: owner }]) {
   id: ID!
-  email: String!
+  email: String @auth(rules: [{ allow: owner }])
   username: String @index(name: "userByUsername", queryField: "userByUsername")
   name: String!
   bio: String
@@ -44,7 +50,9 @@ type User @model @auth(rules: [{ allow: public }]) {
   Likes: [Like] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
-type Post @model @auth(rules: [{ allow: public }]) {
+type Post
+  @model
+  @auth(rules: [{ allow: private, operations: [read] }, { allow: owner }]) {
   id: ID!
   createdAt: AWSDateTime!
   type: String!
@@ -63,4 +71,9 @@ type Post @model @auth(rules: [{ allow: public }]) {
   User: User @belongsTo(fields: ["userID"])
   Likes: [Like] @hasMany(indexName: "byPost", fields: ["id"])
   Comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+}
+
+type Subscription {
+  onCreateCommentByPostId(postID: ID!): Comment
+    @aws_subscribe(mutations: ["createComment"])
 }

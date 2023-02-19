@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { PostMenu } from "./post-menu";
 import useLikeService from "../../hooks/useLikeServices";
 import dayjs from "dayjs";
+import { Avatar } from "../avatar";
 
 export const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const { navigate } = useNavigation();
@@ -50,10 +51,7 @@ export const FeedPost = ({ post, isVisible }: IFeedPost) => {
       <View className="flex-row px-2 items-center mb-2">
         {/* Image */}
         <Pressable onPress={navigateToUser} className="flex-row items-center">
-          <Image
-            className="bg-purple-400 w-8 h-8 rounded-full"
-            source={{ uri: post?.User?.image }}
-          />
+          <Avatar src={post?.User?.image} size={32} />
           <Text className="font-semibold ml-2">{post.User?.username}</Text>
         </Pressable>
         <PostMenu post={post} />

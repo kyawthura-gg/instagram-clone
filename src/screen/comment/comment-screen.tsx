@@ -1,12 +1,14 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useSubscription } from "@apollo/client";
 import React, { useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import {
   CommentsByPostQuery,
   CommentsByPostQueryVariables,
   ModelSortDirection,
+  OnCreateCommentByPostIdSubscription,
+  OnCreateCommentByPostIdSubscriptionVariables,
 } from "../../API";
-import { commentsByPost } from "../../apollo/comment";
+import { commentsByPost, onCreateCommentByPostId } from "../../apollo/comment";
 import { Comment } from "../../components/comment";
 import { ErrorMessage } from "../../components/core/error-message";
 import { RootStackScreenProps } from "../../navigators";
@@ -23,13 +25,19 @@ export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
     variables: {
       postID: postId,
       sortDirection: ModelSortDirection.DESC,
-      limit: 1,
+      limit: 10,
     },
   });
+  const { data: newCommentsData } = useSubscription<
+    OnCreateCommentByPostIdSubscription,
+    OnCreateCommentByPostIdSubscriptionVariables
+  >(onCreateCommentByPostId, { variables: { postID: postId } });
 
-  const comments = data?.commentsByPost?.items;
+  const comments = data?.commentsByPost?.items ?? [];
   const nextToken = data?.commentsByPost?.nextToken;
+  const newComment = newCommentsData?.onCreateCommentByPostId;
 
+  console.log({ newComment: newCommentsData });
   const loadMore = async () => {
     console.log("loading more posts");
     if (!nextToken || isFetchingMore) {
@@ -51,9 +59,15 @@ export const CommentScreen = ({ route }: RootStackScreenProps<"Comment">) => {
   return (
     <View className="flex-1 bg-white">
       <FlatList
-        className="grow px-3"
-        data={comments}
-        renderItem={({ item }) => <Comment comment={item} showDetails />}
+        className="grow"
+        data={newComment ? [...comments, newComment] : comments}
+        renderItem={({ item }) => (
+          <Comment
+            comment={item}
+            showDetails
+            isNew={item?.id === newComment?.id}
+          />
+        )}
         ListEmptyComponent={() => (
           <Text className="text-center">No comments. Be the first comment</Text>
         )}

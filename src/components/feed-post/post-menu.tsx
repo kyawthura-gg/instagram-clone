@@ -33,8 +33,11 @@ export const PostMenu = ({ post }: { post: IPost }) => {
   const navigateToEdit = () => navigate("UpdatePost", { id: post.id });
 
   const handleDelete = async () => {
-    const response = await doDeletePost();
-    console.log("res", response);
+    try {
+      await doDeletePost();
+    } catch (e) {
+      Alert.alert("Failed to delete post", (e as Error).message);
+    }
   };
 
   const handleDeleteAlert = () => {
