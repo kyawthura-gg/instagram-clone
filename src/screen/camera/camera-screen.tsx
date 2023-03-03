@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import {
   Camera,
-  CameraPictureOptions,
-  CameraRecordingOptions,
+  type CameraPictureOptions,
+  type CameraRecordingOptions,
   CameraType,
   FlashMode,
   VideoQuality,
@@ -79,6 +79,9 @@ export const CameraScreen = () => {
     try {
       const result = await cameraRef.current.recordAsync(options);
       console.warn("Recording", result);
+      navigate("CreatePost", {
+        video: result.uri,
+      });
     } catch (error) {
       console.error("Recording Err:", error);
     }
@@ -94,16 +97,22 @@ export const CameraScreen = () => {
   };
 
   const openImageGallery = async () => {
-    const { assets, canceled } = await launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
+    const { assets } = await launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.All,
+      allowsMultipleSelection: true,
+      selectionLimit: 3,
     });
-    if (!canceled && assets && assets.length > 0) {
-      if (assets.length === 1) {
-        navigate("CreatePost", {
-          image: assets[0].uri,
-        });
-      }
+    if (!assets || !(assets?.length > 0)) {
+      return;
     }
+    const params: { image?: string; images?: string[]; video?: string } = {};
+    if (assets.length === 1) {
+      const field = assets[0].type?.startsWith("video") ? "video" : "image";
+      params[field] = assets[0].uri;
+    } else if (assets.length > 1) {
+      params.images = assets.map((asset) => asset.uri);
+    }
+    navigate("CreatePost", params);
   };
 
   if (!permission?.granted) {
@@ -111,10 +120,11 @@ export const CameraScreen = () => {
     console.log(permission?.granted);
   }
 
-  const toggleCameraType = () =>
+  const toggleCameraType = () => {
     setCameraType((current) =>
-      current === CameraType.back ? CameraType.front : CameraType.back,
+      current === CameraType.back ? CameraType.front : CameraType.back
     );
+  };
 
   return (
     <View className="flex-1 bg-black">
@@ -123,7 +133,9 @@ export const CameraScreen = () => {
         className="w-full h-full"
         type={cameraType}
         ratio="4:3"
-        onCameraReady={() => setCameraReady(true)}
+        onCameraReady={() => {
+          setCameraReady(true);
+        }}
       />
       <View
         className="absolute flex-row justify-around w-full items-center"

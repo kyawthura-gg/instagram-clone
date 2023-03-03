@@ -1,9 +1,9 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { Alert, Image, TextInput, View } from "react-native";
+import { Alert, Image, Text, TextInput, View } from "react-native";
 import { Storage } from "aws-amplify";
 import { nanoid } from "nanoid";
-import {
+import type {
   CreatePostInput,
   CreatePostMutation,
   CreatePostMutationVariables,
@@ -13,7 +13,7 @@ import { Button } from "../../components/button";
 import { Carousel } from "../../components/carousel";
 import { VideoPlayer } from "../../components/video-player";
 import { useAuthContext } from "../../contexts/auth-context";
-import { RootStackScreenProps } from "../../navigators";
+import type { RootStackScreenProps } from "../../navigators";
 
 export const CreatePostScreen = ({
   route: { params },
@@ -23,6 +23,8 @@ export const CreatePostScreen = ({
   const { userId } = useAuthContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState("");
+  const [progress, setProgress] = useState(0);
+
   const [doCreatePost] = useMutation<
     CreatePostMutation,
     CreatePostMutationVariables
@@ -45,8 +47,14 @@ export const CreatePostScreen = ({
     };
     // upload the media files to S3 and get the key
     if (image) {
-      const imageKey = await uploadMedia(image);
-      input.image = imageKey;
+      input.image = await uploadMedia(image);
+    } else if (images) {
+      const imageKeys = await Promise.all(
+        images.map(async (img) => await uploadMedia(img))
+      );
+      input.images = imageKeys.filter((key) => key) as string[];
+    } else if (video) {
+      input.video = await uploadMedia(video);
     }
     await doCreatePost({ variables: { input } });
     setIsSubmitting(false);
@@ -63,7 +71,11 @@ export const CreatePostScreen = ({
       const extension = uriParts[uriParts.length - 1];
 
       // upload the file (blob) to S3
-      const s3Response = await Storage.put(`${nanoid()}.${extension}`, blob);
+      const s3Response = await Storage.put(`${nanoid()}.${extension}`, blob, {
+        progressCallback(newProgress) {
+          setProgress(newProgress.loaded / newProgress.total);
+        },
+      });
       return s3Response.key;
     } catch (e) {
       Alert.alert("Error uploading the file");
@@ -83,12 +95,12 @@ export const CreatePostScreen = ({
   } else if (images) {
     content = <Carousel images={images} />;
   } else if (video) {
-    content = <VideoPlayer uri={video} />;
+    content = <VideoPlayer uri={video} shouldPlay />;
   }
 
   return (
     <View className="items-center">
-      <View className="w-48 h-48">{content}</View>
+      <View className="w-9/12 aspect-square">{content}</View>
       <TextInput
         value={description}
         onChangeText={setDescription}
@@ -101,6 +113,15 @@ export const CreatePostScreen = ({
         label={isSubmitting ? "Submitting" : "Submit"}
         onPress={handleSubmit}
       />
+      {isSubmitting ? (
+        <View className="bg-gray-300 w-full h-6 justify-center items-center rounded-3xl my-2.5">
+          <View
+            className="bg-primary absolute h-full self-start rounded-2xl"
+            style={{ width: `${progress * 100}%` }}
+          />
+          <Text>Uploading {Math.floor(progress * 100)}%</Text>
+        </View>
+      ) : null}
     </View>
   );
 };

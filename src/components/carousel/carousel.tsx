@@ -1,5 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Dimensions, FlatList, Image, View, ViewToken } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  View,
+  type ViewToken,
+} from "react-native";
 
 interface ICarousel {
   images: string[];
@@ -14,9 +20,11 @@ export const Carousel = ({ images }: ICarousel) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      setActiveIndex(viewableItems[0].index);
-    },
+    (params: { viewableItems: ViewToken[] }) => {
+      if (params?.viewableItems?.[0]?.index) {
+        setActiveIndex(params?.viewableItems[0].index);
+      }
+    }
   );
 
   return (

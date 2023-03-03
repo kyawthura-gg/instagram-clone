@@ -10,7 +10,9 @@ interface IVideoPlayer {
 export const VideoPlayer = ({ uri, shouldPlay }: IVideoPlayer) => {
   const [isMuted, setIsMuted] = useState(true);
 
-  const toggleMute = () => setIsMuted((m) => !m);
+  const toggleMute = () => {
+    setIsMuted((m) => !m);
+  };
 
   return (
     <View>
